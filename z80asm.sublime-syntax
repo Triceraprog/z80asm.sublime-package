@@ -1,0 +1,34 @@
+%YAML 1.2
+---
+name: z80asm
+file_extensions: [asm]
+scope: source.asm.z80
+
+contexts:
+  main:
+    - match: ;.*
+      scope: comment
+    - match: '(.*?:)\s+(\w*)\s+'
+      captures:
+        1: entity.name.label
+        2: keyword.control
+      push: after_keyword
+    - match: '\s+(\w*)\s+'
+      scope: keyword.control
+      push: after_keyword
+
+
+  after_keyword:
+    - match: ;.*
+      scope: comment
+      pop: true
+    - match: ','
+      scope: punctuation.separator
+    - match: '\$[0-9A-Fa-f]+'
+      scope: constant.numeric
+    - match: \bhl\b|\bbc\b|\bde\b|\bpc\b|\bsp\b|\baf\b|\ba\b|\bf\b|\bb\b|\bc\b|\bd\b|\be\b|\bh\b|\bl\b|\bix\b|\biy\b
+      scope: variable.parameter
+    - match: \bnz\b|\bz\b|\bm\b|\bp\b|\bnc\b|\bc\b
+      scope: keyword.operator.logical
+    - match: \n
+      pop: true
